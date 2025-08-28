@@ -145,32 +145,33 @@ def run_katla_command(
     """Run the appropriate katla command for a snippet."""
     output_file = Path(output_dir) / Path(src_file).name / f"{snippet.name}.tex"
 
-    if snippet.kind == "display":
-        cmd = [
-            "katla",
-            "latex",
-            "macro",
-            snippet.name,
-            src_file,
-            ttm_file,
-            str(snippet.line_offset + 1),
-            "0",
-            str(snippet.line_count - 1),
-        ]
-    else:  # inline
-        cmd = [
-            "katla",
-            "latex",
-            "macro",
-            "inline",
-            snippet.name,
-            src_file,
-            ttm_file,
-            "0",
-            str(snippet.line_offset),
-            str(snippet.column_start_offset + 1),
-            str(snippet.column_end_offset),
-        ]
+    match snippet.kind:
+        case "display":
+            cmd = [
+                "katla",
+                "latex",
+                "macro",
+                snippet.name,
+                src_file,
+                ttm_file,
+                str(snippet.line_offset + 1),
+                "0",
+                str(snippet.line_count - 1),
+            ]
+        case "inline":
+            cmd = [
+                "katla",
+                "latex",
+                "macro",
+                "inline",
+                snippet.name,
+                src_file,
+                ttm_file,
+                "0",
+                str(snippet.line_offset),
+                str(snippet.column_start_offset + 1),
+                str(snippet.column_end_offset),
+            ]
 
     if dry_run:
         print(f"Would run: {' '.join(cmd)} > {output_file}")
